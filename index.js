@@ -19,17 +19,17 @@ app.get("/", (req, res) => {
 app.get("/students", async (req, res) => {
   try {
     const students = await Student.find();
-    res.json(students);
+    await res.json(students);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
 app.post("/students", async (req, res) => {
-  const { name, age, grade } = req.body;
+  const { name, age, grade, gender } = req.body;
 
   try {
-    const student = new Student({ name, age, grade });
+    const student = new Student({ name, age, grade, gender });
     await student.save();
     res.status(201).json(student);
   } catch (error) {
@@ -52,7 +52,7 @@ app.put("/students/:id", async (req, res) => {
       return res.status(404).json({ message: "Student not found" });
     }
 
-    res.status(200).json(updatedStudent);
+    await res.status(200).json(updatedStudent);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
@@ -81,9 +81,9 @@ app.delete("/students/:id", async (req, res) => {
   }
 });
 
-// const PORT = 3000;
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}`);
-// });
+const PORT = 5000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
-module.exports = serverless(app);
+// module.exports = serverless(app);
