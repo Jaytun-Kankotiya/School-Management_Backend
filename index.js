@@ -10,7 +10,7 @@ const { Student } = require("./models/students.model.js");
 app.use(express.json());
 
 app.use(cors({
-  origin: ['http://localhost:5173'],
+  origin: ['http://localhost:5173', 'https://vitejsviteqgvqbah5-sshe--5173--96435430.local-credentialless.webcontainer.io'],
   credentials: true,
 }));
 
