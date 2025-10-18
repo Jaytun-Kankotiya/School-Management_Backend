@@ -2,10 +2,10 @@ require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const serverless = require('serverless-http');
 
 const { initializeDatabase } = require("./db/db.connection");
 const { Student } = require("./models/students.model.js");
+const { default: Teacher } = require('./models/teachers.model.js');
 
 app.use(express.json());
 
@@ -98,6 +98,58 @@ app.delete("/students/:id", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+
+app.get('/teachers', async (req, res) => {
+  try {
+    const teachers = await Teacher.find();
+    return res.status(200).json({ success: true, data: teachers });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: 'Error fetching teachers', error });
+  }
+});
+
+
+app.post('/teachers', async (req, res) => {
+  let { name, subject, experience } = req.body;
+  try {
+    if (!name) return res.status(400).json({ success: false, message: "Name is required" });
+    if (!subject) return res.status(400).json({ success: false, message: "Subject is required" });
+    if (!experience || isNaN(experience)) return res.status(400).json({ success: false, message: "Experience is required" });
+
+    experience = Number(experience);
+    const newTeacher = new Teacher({ name, subject, experience });
+    const savedTeacher = await newTeacher.save();
+    return res.status(201).json({ success: true, data: savedTeacher });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: 'Error creating teacher', error });
+  }
+});
+
+
+app.put('/teachers/:id', async (req, res) => {
+  try {
+    const updatedTeacher = await Teacher.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedTeacher) return res.status(404).json({ success: false, message: 'Teacher not found' });
+
+    return res.status(200).json({ success: true, data: updatedTeacher, message: 'Teacher updated successfully' });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: 'Error updating teacher', error });
+  }
+});
+
+
+app.delete('/teachers/:id', async (req, res) => {
+  try {
+    const deletedTeacher = await Teacher.findByIdAndDelete(req.params.id);
+    if (!deletedTeacher) return res.status(404).json({ success: false, message: 'Teacher not found' });
+
+    return res.status(200).json({ success: true, message: 'Teacher deleted successfully' });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: 'Error deleting teacher', error });
+  }
+});
+
 
 const PORT = 5000;
 app.listen(PORT, () => {
