@@ -5,10 +5,14 @@ const app = express();
 const serverless = require('serverless-http');
 
 const { initializeDatabase } = require("./db/db.connection");
-const { Student } = require("./models/students.model");
+const { Student } = require("./models/students.model.js");
 
-app.use(cors());
 app.use(express.json());
+
+app.use(cors({
+  origin: ['http://localhost:5173'],
+  credentials: true,
+}));
 
 initializeDatabase();
 
@@ -38,12 +42,11 @@ app.post("/students", async (req, res) => {
     if(!gender){
       return res.status(400).json({success: false, message: "Gender is required"})
     }
-    if(!grade || isNaN(grade)){
+    if(!grade){
       return res.status(400).json({success: false, message: "Grades are required"})
     }
     age = Number(age)
-    grade = Number(grade)
-    
+
     const student = new Student({ name, age, grade, gender });
     await student.save();
     res.status(201).json(student);
