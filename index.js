@@ -26,9 +26,24 @@ app.get("/students", async (req, res) => {
 });
 
 app.post("/students", async (req, res) => {
-  const { name, age, grade, gender } = req.body;
+  let { name, age, grade, gender } = req.body;
 
   try {
+    if(!name){
+      return res.status(400).json({success: false, message: "Name is required"})
+    }
+    if(!age || isNaN(age)){
+      return res.status(400).json({success: false, message: "Age is required"})
+    }
+    if(!gender){
+      return res.status(400).json({success: false, message: "Gender is required"})
+    }
+    if(!grade || isNaN(grade)){
+      return res.status(400).json({success: false, message: "Grades are required"})
+    }
+    age = Number(age)
+    grade = Number(grade)
+    
     const student = new Student({ name, age, grade, gender });
     await student.save();
     res.status(201).json(student);
