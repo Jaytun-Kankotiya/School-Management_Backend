@@ -10,7 +10,7 @@ const { default: Teacher } = require('./models/teachers.model.js');
 app.use(express.json());
 
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://vitejsviteqgvqbah5-sshe--5173--96435430.local-credentialless.webcontainer.io'],
+  origin: ['http://localhost:5173', 'https://school-management-green-three.vercel.app', 'https://vitejsviteqgvqbah5-sshe--5173--96435430.local-credentialless.webcontainer.io'],
   credentials: true,
 }));
 
