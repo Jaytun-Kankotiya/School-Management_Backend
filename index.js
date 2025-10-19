@@ -111,14 +111,15 @@ app.get('/teachers', async (req, res) => {
 
 
 app.post('/teachers', async (req, res) => {
-  let { name, subject, experience } = req.body;
+  let { name, gender, subject, experience } = req.body;
   try {
     if (!name) return res.status(400).json({ success: false, message: "Name is required" });
     if (!subject) return res.status(400).json({ success: false, message: "Subject is required" });
+    if (!gender) return res.status(400).json({ success: false, message: "Gender is required" });
     if (!experience || isNaN(experience)) return res.status(400).json({ success: false, message: "Experience is required" });
 
     experience = Number(experience);
-    const newTeacher = new Teacher({ name, subject, experience });
+    const newTeacher = new Teacher({ name, gender, subject, experience });
     const savedTeacher = await newTeacher.save();
     return res.status(201).json({ success: true, data: savedTeacher });
   } catch (error) {
